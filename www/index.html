@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Land Dakhila Verify PRO v2.3 (Targeted Fetch Edition)</title>
+
+<style>
+
+body{
+    background:#0a0a0a;
+    color:#00ff41;
+    font-family:Segoe UI,Arial,sans-serif;
+    text-align:center;
+    padding:20px;
+}
+
+.container{
+    max-width:1450px;
+    margin:auto;
+}
+
+h2{
+    margin-bottom:20px;
+}
+
+textarea{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    background:#000;
+    color:#0f0;
+    border:1px solid #333;
+    border-radius:5px;
+    resize:vertical;
+    font-family:monospace;
+}
+
+button{
+    padding:10px 14px;
+    margin:5px;
+    cursor:pointer;
+    font-weight:bold;
+    background:#111;
+    color:#00ff41;
+    border:1px solid #00ff41;
+    border-radius:5px;
+    transition:.3s;
+}
+
+button:hover{
+    background:#00ff41;
+    color:#000;
+}
+
+button:disabled{
+    opacity:.4;
+    cursor:not-allowed;
+}
+
+.btn-danger{
+    border-color:#ff4444;
+    color:#ff4444;
+}
+
+.btn-danger:hover{
+    background:#ff4444;
+    color:#fff;
+}
+
+.btn-info{
+    border-color:#33b5e5;
+    color:#33b5e5;
+}
+
+.btn-info:hover{
+    background:#33b5e5;
+    color:#000;
+}
+
+.btn-warning{
+    border-color:#ffbb33;
+    color:#ffbb33;
+}
+
+.btn-warning:hover{
+    background:#ffbb33;
+    color:#000;
+}
+
+.settings-bar{
+    margin:15px 0;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:15px;
+    background:#111;
+    border:1px solid #333;
+    padding:15px;
+    border-radius:5px;
+}
+
+.settings-bar input,
+.settings-bar select{
+    background:#000;
+    color:#00ff41;
+    border:1px solid #00ff41;
+    padding:8px;
+    border-radius:5px;
+    outline:none;
+    text-align:center;
+    min-width:180px;
+}
+
+.settings-bar label{
+    display:block;
+    margin-bottom:5px;
+    color:#ccc;
+    font-size:14px;
+}
+
+.status-bar{
+    margin:15px 0;
+    display:flex;
+    justify-content:space-around;
+    flex-wrap:wrap;
+    background:#111;
+    border:1px solid #333;
+    padding:12px;
+    border-radius:5px;
+}
+
+.success{
+    color:#00ff41;
+    font-weight:bold;
+}
+
+.fail{
+    color:#ff4444;
+    font-weight:bold;
+}
+
+.total{
+    color:#33b5e5;
+    font-weight:bold;
+}
+
+.remaining{
+    color:#ffbb33;
+    font-weight:bold;
+}
+
+#console{
+    background:#000;
+    height:170px;
+    overflow:auto;
+    text-align:left;
+    padding:10px;
+    border:1px solid #333;
+    border-radius:5px;
+    margin-top:10px;
+    font-size:13px;
+    color:#aaa;
+}
+
+.table-container{
+    margin-top:20px;
+    max-height:650px;
+    overflow:auto;
+    border:1px solid #333;
+    border-radius:5px;
+    background:#111;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:12px;
+}
+
+th,td{
+    border:1px solid #333;
+    padding:10px;
+    white-space:nowrap;
+}
+
+th{
+    background:#00ff41;
+    color:#000;
+    position:sticky;
+    top:0;
+    z-index:10;
+}
+
+tr:nth-child(even){
+    background:#0d0d0d;
+}
+
+tr:hover{
+    background:#1a1a1a;
+}
+
+a{
+    color:#33b5e5;
+    text-decoration:none;
+}
+
+a:hover{
+    text-decoration:underline;
+}
+
+.target-header {
+    width: 100%;
+    color: #33b5e5;
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 15px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>
+📊 Land Dakhila Verify PRO
+<small style="font-size:12px;color:#777;">
+v3.3 Targeted Fetch Edition & auto/manual log rest
+</small>
+</h2>
+
+<textarea id="idList" rows="4" placeholder="প্রতি লাইনে একটি ID দিন..."></textarea>
+
+<!-- Target Fetching Criteria -->
+<div class="settings-bar" style="border-color: #33b5e5;">
+    <div class="target-header">🎯 Target Fetching Filters (ফাঁকা রাখলে সব ডাটা সেভ হবে)</div>
+    <div>
+        <label>জেলা Target</label>
+        <input type="text" id="targetDistrict" value="বরিশাল" placeholder="যেমন: ঢাকা (ফাঁকা = সব)">
+    </div>
+    <div>
+        <label>উপজেলা/থানা Target</label>
+        <input type="text" id="targetUpazila" placeholder="যেমন: মিরপুর (ফাঁকা = সব)">
+    </div>
+    <div>
+        <label>মৌজা Target</label>
+        <input type="text" id="targetMouza" placeholder="যেমন: সেনপাড়া (ফাঁকা = সব)">
+    </div>
+</div>
+
+
+
+<div class="settings-bar">
+
+<div>
+<label>Start ID</label>
+<input type="number" id="startRange">
+</div>
+
+<div>
+<label>End ID</label>
+<input type="number" id="endRange">
+</div>
+
+<div>
+<label>Threads</label>
+<input type="number" id="threadCount" value="1" min="1" max="10">
+</div>
+
+<div>
+<label>Delay (ms)</label>
+<input type="number" id="delayTime" value="5000" min="2000">
+</div>
+
+</div>
+
+<div style="margin-top:15px; margin-bottom:15px;">
+
+<button onclick="pushNextRange()">➕ Push Next Range</button>
+<button id="startBtn" onclick="startCheck()">🚀 Start Process</button>
+<button id="pauseBtn" onclick="togglePause()" disabled>⏸ Pause Process</button>
+<button onclick="copyToExcel()">📋 Copy Table</button>
+<button onclick="downloadSuccess()">✅ Download Success</button>
+<button onclick="downloadFailed()">❌ Download Failed</button>
+<button onclick="exportJSON()" class="btn-info">📋 Export JSON</button>
+<button onclick="document.getElementById('jsonFileInput').click()" class="btn-info">📥 Import JSON</button>
+<input type="file" id="jsonFileInput" accept=".json" style="display:none;" onchange="importJSON(this)">
+<button onclick="clearHistory()" class="btn-danger">🗑️ Clear History</button>
+
+</div>
+
+<!-- Log Reset Settings Bar -->
+<div class="settings-bar" style="border-color: #ffbb33;">
+    <div class="target-header" style="color:#ffbb33;">🔄 Log Reset Settings</div>
+    <div>
+        <label>রিসেট মোড</label>
+        <select id="resetMode" onchange="saveResetSettings(); updateResetUI();">
+            <option value="auto">অটো লগ রিসেট (Auto)</option>
+            <option value="manual">ম্যানুয়াল লগ রিসেট (Manual)</option>
+        </select>
+    </div>
+    <div id="limitFieldContainer">
+        <label>কত স্ক্যান পর রিসেট</label>
+        <input type="number" id="resetLimit" value="50" min="1" onchange="saveResetSettings()">
+    </div>
+    <div>
+        <label>বর্তমান স্ক্যান কাউন্ট</label>
+        <input type="text" id="scanCounterDisplay" value="0" readonly style="color:#ffbb33; font-weight:bold;">
+    </div>
+    <div style="display:flex; align-items:flex-end;">
+        <button type="button" class="btn-warning" onclick="manualResetAction()">🧹 লগ রিসেট করুন</button>
+    </div>
+</div>
+
+<div class="status-bar">
+<span>🔢 Total: <span id="totalInput" class="total">0</span></span>
+<span>⏳ Remaining: <span id="remainingCount" class="remaining">0</span></span>
+<span>✅ Saved: <span id="count" class="success">0</span></span>
+<span>❌ Failed/Skipped: <span id="failCount" class="fail">0</span></span>
+</div>
+
+<div>
+<button onclick="clearLog()" class="btn-info" style="font-size: 11px; padding: 5px 10px; margin-top: 5px;">🧹 Clear Log</button>
+<div id="console"></div>
+</div>
+
+<!-- Table Display Filters -->
+<div class="settings-bar">
+<div class="target-header" style="color:#00ff41;">🔍 Table Display Filters</div>
+<div>
+<label>জেলা</label>
+<select id="districtFilter" onchange="updateFilterOptions()">
+<option value="">সব জেলা</option>
+</select>
+</div>
+
+<div>
+<label>উপজেলা/থানা</label>
+<select id="upazilaFilter" onchange="updateMouzaOptions()">
+<option value="">সব উপজেলা</option>
+</select>
+</div>
+
+<div>
+<label>মৌজা</label>
+<select id="mouzaFilter" onchange="updateHoldingOptions()">
+<option value="">সব মৌজা</option>
+</select>
+</div>
+
+<div>
+<label>হোল্ডিং</label>
+<select id="holdingFilter" onchange="applyFilters()">
+<option value="">সব হোল্ডিং</option>
+</select>
+</div>
+
+</div>
+
+<div class="table-container">
+
+<table id="resultTable">
+<thead>
+<tr>
+<th>SL</th>
+<th>Save Time</th>
+<th>জেলা</th>
+<th>উপজেলা/থানা</th>
+<th>মৌজা</th>
+<th>ভূমি অফিস</th>
+<th>হোল্ডিং</th>
+<th>খতিয়ান</th>
+<th>তারিখ</th>
+<th>Print</th>
+<th>ID</th>
+</tr>
+</thead>
+<tbody id="tableBody"></tbody>
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+let successData = JSON.parse(localStorage.getItem("dakilaDataHistory")) || [];
+let failedList = [];
+let currentIndex = 0;
+let totalIdsCount = 0;
+let isPaused = false;
+let isProcessing = false;
+let currentScanCount = 0;
+
+const tableBody = document.getElementById("tableBody");
+const consoleBox = document.getElementById("console");
+const startBtn = document.getElementById("startBtn");
+const pauseBtn = document.getElementById("pauseBtn");
+
+window.onload = () => {
+    loadResetSettings();
+    initAutoRange();
+    loadDistrictOptions();
+    renderTable(successData);
+};
+
+// --- Log Reset Settings Functions ---
+function loadResetSettings() {
+    let savedMode = localStorage.getItem("logResetMode") || "auto";
+    let savedLimit = localStorage.getItem("logResetLimit") || "50";
+    
+    document.getElementById("resetMode").value = savedMode;
+    document.getElementById("resetLimit").value = savedLimit;
+    updateResetUI();
+}
+
+function saveResetSettings() {
+    let mode = document.getElementById("resetMode").value;
+    let limit = document.getElementById("resetLimit").value;
+    
+    localStorage.setItem("logResetMode", mode);
+    localStorage.setItem("logResetLimit", limit);
+}
+
+function updateResetUI() {
+    let mode = document.getElementById("resetMode").value;
+    let limitContainer = document.getElementById("limitFieldContainer");
+    
+    if(mode === "manual") {
+        limitContainer.style.opacity = "0.5";
+        document.getElementById("resetLimit").disabled = true;
+    } else {
+        limitContainer.style.opacity = "1";
+        document.getElementById("resetLimit").disabled = false;
+    }
+}
+
+function updateScanCounterUI() {
+    document.getElementById("scanCounterDisplay").value = currentScanCount;
+}
+
+function manualResetAction() {
+    currentScanCount = 0;
+    updateScanCounterUI();
+    clearLog();
+    log(`<span style="color:#ffbb33;">🧹 ম্যানুয়ালি লগ এবং কাউন্টার রিসেট করা হয়েছে।</span>`);
+}
+
+function checkAndHandleAutoReset() {
+    let mode = document.getElementById("resetMode").value;
+    let limit = parseInt(document.getElementById("resetLimit").value) || 50;
+
+    currentScanCount++;
+    updateScanCounterUI();
+
+    if(mode === "auto" && currentScanCount >= limit) {
+        clearLog();
+        log(`<span style="color:#ffbb33; font-weight:bold;">🔄 অটো লগ রিসেট সম্পন্ন হয়েছে (${limit} টি স্ক্যান পর)।</span>`);
+        currentScanCount = 0;
+        updateScanCounterUI();
+        return true;
+    }
+    return false;
+}
+// ---------------------------------
+
+function initAutoRange(){
+    let lastId = 100000000;
+    if(successData.length > 0){
+        let ids = successData.map(r => parseInt(r.id));
+        lastId = Math.max(...ids);
+    }
+    let start = lastId + 1;
+    let end = start + 2000;
+
+    document.getElementById("startRange").value = start;
+    document.getElementById("endRange").value = end;
+}
+
+function pushNextRange(){
+    let currentEnd = parseInt(document.getElementById("endRange").value);
+    let nextStart = currentEnd + 1;
+    let nextEnd = nextStart + 500;
+
+    document.getElementById("startRange").value = nextStart;
+    document.getElementById("endRange").value = nextEnd;
+
+    log(`<span class="success">➕ New Range: ${nextStart} → ${nextEnd}</span>`);
+}
+
+const sleep = ms => new Promise(res => setTimeout(res, ms));
+
+function log(msg){
+    consoleBox.innerHTML += msg + "<br>";
+    consoleBox.scrollTop = consoleBox.scrollHeight;
+}
+
+function clearLog(){
+    consoleBox.innerHTML = "";
+}
+
+function updateStatusDisplay(){
+    document.getElementById("count").innerText = successData.length;
+    document.getElementById("failCount").innerText = failedList.length;
+    let remaining = Math.max(0, totalIdsCount - currentIndex);
+    document.getElementById("remainingCount").innerText = remaining;
+}
+
+function parsePageData(html){
+    let parser = new DOMParser();
+    let doc = parser.parseFromString(html,"text/html");
+    let text = doc.body.innerText;
+
+    function getMatch(regex){
+        let m = text.match(regex);
+        return m ? m[1].trim() : "N/A";
+    }
+
+    return {
+        district : getMatch(/জেলা:[:：]?\s*([^\n]+)/),
+        upazila : getMatch(/উপজেলা\/থানা[:：]?\s*([^\n]+)/),
+        mouza : getMatch(/মৌজার নাম ও জে\.\s*এল\.\s*নং[:：]?\s*([^\n]+)/),
+        office : getMatch(/ভূমি অফিসের নাম[:：]?\s*([^\n]+)/),
+        holding : getMatch(/হোল্ডিং নম্বর[:：]?\s*([^\n]+)/),       
+        khatian : getMatch(/খতিয়ান নং:[:：]?\s*([^\n]+)/),
+        dakhila_date : getMatch(/তারিখ\s*[:：]?\s*([^\n]+)/)
+    };
+}
+
+function togglePause() {
+    if (!isProcessing) return;
+    isPaused = !isPaused;
+    if (isPaused) {
+        pauseBtn.innerText = "▶ Resume Process";
+        log(`<span style="color:#ffbb33;">⏸ Process Paused.</span>`);
+    } else {
+        pauseBtn.innerText = "⏸ Pause Process";
+        log(`<span class="success">▶ Process Resumed.</span>`);
+    }
+}
+
+async function startCheck(){
+    if(isProcessing) return;
+
+    let manualIds = document.getElementById("idList").value.split("\n").map(i => i.trim()).filter(i => i);
+    let start = parseInt(document.getElementById("startRange").value);
+    let end = parseInt(document.getElementById("endRange").value);
+
+    let ids = [...manualIds];
+    for(let i=start; i<=end; i++){
+        ids.push(String(i));
+    }
+    ids = [...new Set(ids)];
+
+    failedList = [];
+    currentIndex = 0;
+    totalIdsCount = ids.length;
+    isPaused = false;
+    isProcessing = true;
+
+    startBtn.disabled = true;
+    pauseBtn.disabled = false;
+    pauseBtn.innerText = "⏸ Pause Process";
+
+    document.getElementById("totalInput").innerText = totalIdsCount;
+    updateStatusDisplay();
+
+    let targetDistrict = document.getElementById("targetDistrict").value.trim().toLowerCase();
+    let targetUpazila = document.getElementById("targetUpazila").value.trim().toLowerCase();
+    let targetMouza = document.getElementById("targetMouza").value.trim().toLowerCase();
+
+    async function worker(){
+        while(currentIndex < ids.length){
+            while(isPaused) {
+                await sleep(500);
+            }
+
+            if (currentIndex >= ids.length) break;
+            let id = ids[currentIndex++];
+            updateStatusDisplay();
+
+            if(successData.some(r => r.id === id)){
+                log(`⏩ Skip (Already Saved): ${id}`);
+                continue;
+            }
+
+            log(`🔍 Checking: ${id}`);
+
+            try{
+                let url = `https://dakhila.ldtax.gov.bd/dakhila-print/${id}`;
+                let res = await fetch(url);
+                let html = await res.text();
+
+                if(html.length > 1000){
+                    let d = parsePageData(html);
+
+                    let matchDistrict = !targetDistrict || d.district.toLowerCase().includes(targetDistrict);
+                    let matchUpazila = !targetUpazila || d.upazila.toLowerCase().includes(targetUpazila);
+                    let matchMouza = !targetMouza || d.mouza.toLowerCase().includes(targetMouza);
+
+                    if(matchDistrict && matchUpazila && matchMouza){
+                        let record = {
+                            id : id,
+                            ...d,
+                            saveTime : new Date().toLocaleString(),
+                            print : url
+                        };
+
+                        successData.push(record);
+                        localStorage.setItem("dakilaDataHistory", JSON.stringify(successData));
+
+                        loadDistrictOptions();
+                        applyFilters();
+
+                        log(`<span class="success">✅ Matched & Saved: ${id} (${d.district} - ${d.upazila})</span>`);
+                    } else {
+                        failedList.push(id);
+                        log(`<span style="color:#ffbb33;">⏩ Skipped (Target Mismatch): ${id} [${d.district}, ${d.upazila}]</span>`);
+                    }
+
+                } else {
+                    failedList.push(id);
+                    log(`<span class="fail">❌ Invalid ID: ${id}</span>`);
+                }
+
+            } catch(e){
+                failedList.push(id);
+                log(`<span class="fail">⚠️ Error: ${id}</span>`);
+            }
+
+            // Check Log Reset Logic
+            checkAndHandleAutoReset();
+
+            updateStatusDisplay();
+            await sleep(parseInt(document.getElementById("delayTime").value) || 0);
+        }
+    }
+
+    let workers = [];
+    let threads = parseInt(document.getElementById("threadCount").value) || 1;
+    for(let i=0; i<threads; i++){
+        workers.push(worker());
+    }
+
+    await Promise.all(workers);
+
+    startBtn.disabled = false;
+    pauseBtn.disabled = true;
+    pauseBtn.innerText = "⏸ Pause Process";
+    isProcessing = false;
+    isPaused = false;
+
+    initAutoRange();
+    alert("প্রসেসিং শেষ!");
+}
+
+function renderTable(data){
+    let rows = "";
+    data.forEach((rec,index)=>{
+        rows += `
+        <tr>
+        <td>${index+1}</td>
+        <td>${rec.saveTime}</td>
+        <td>${rec.district}</td>
+        <td>${rec.upazila}</td>
+        <td>${rec.mouza}</td>
+        <td>${rec.office}</td>
+        <td>${rec.holding}</td>
+        <td style="color:#00ff41;font-weight:bold;">${rec.khatian}</td>
+        <td>${rec.dakhila_date}</td>
+        <td><a href="${rec.print}" target="_blank">Print</a></td>
+        <td>${rec.id}</td>
+        </tr>
+        `;
+    });
+    tableBody.innerHTML = rows;
+    updateStatusDisplay();
+}
+
+function exportJSON() {
+    if(successData.length === 0) {
+        alert("এক্সপোর্ট করার মতো কোনো ডেটা হিস্ট্রিতে নেই!");
+        return;
+    }
+    let dataStr = JSON.stringify(successData, null, 2);
+    let blob = new Blob([dataStr], {type: "application/json;charset=utf-8"});
+    let a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `Land_Data_Backup_${Date.now()}.json`;
+    a.click();
+    log(`<span class="success">📋 Backup JSON exported successfully!</span>`);
+}
+
+function importJSON(input) {
+    let file = input.files[0];
+    if (!file) return;
+
+    let reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            let importedData = JSON.parse(e.target.result);
+            if (!Array.isArray(importedData)) {
+                alert("ভুল ফাইল ফরম্যাট!");
+                return;
+            }
+
+            let newRecordsCount = 0;
+            importedData.forEach(item => {
+                if (item.id && !successData.some(r => r.id === item.id)) {
+                    successData.push(item);
+                    newRecordsCount++;
+                }
+            });
+
+            localStorage.setItem("dakilaDataHistory", JSON.stringify(successData));
+            loadDistrictOptions();
+            applyFilters();
+            initAutoRange();
+            alert(`সফলভাবে ${newRecordsCount} টি নতুন রেকর্ড ইম্পোর্ট করা হয়েছে!`);
+        } catch (err) {
+            alert("ফাইল পড়তে সমস্যা হয়েছে!");
+        }
+        input.value = "";
+    };
+    reader.readAsText(file);
+}
+
+function uniqueValues(arr,key){
+    return [...new Set(arr.map(i => i[key]))].filter(Boolean).sort();
+}
+
+function loadDistrictOptions(){
+    let districtSelect = document.getElementById("districtFilter");
+    districtSelect.innerHTML = `<option value="">সব জেলা</option>`;
+    uniqueValues(successData,"district").forEach(v=>{
+        districtSelect.innerHTML += `<option value="${v}">${v}</option>`;
+    });
+}
+
+function updateFilterOptions(){
+    let district = document.getElementById("districtFilter").value;
+    let upazilaSelect = document.getElementById("upazilaFilter");
+    upazilaSelect.innerHTML = `<option value="">সব উপজেলা</option>`;
+
+    let filtered = district ? successData.filter(r => r.district === district) : successData;
+    uniqueValues(filtered,"upazila").forEach(v=>{
+        upazilaSelect.innerHTML += `<option value="${v}">${v}</option>`;
+    });
+    updateMouzaOptions();
+}
+
+function updateMouzaOptions(){
+    let district = document.getElementById("districtFilter").value;
+    let upazila = document.getElementById("upazilaFilter").value;
+    let mouzaSelect = document.getElementById("mouzaFilter");
+    mouzaSelect.innerHTML = `<option value="">সব মৌজা</option>`;
+
+    let filtered = successData.filter(r => (!district || r.district === district) && (!upazila || r.upazila === upazila));
+    uniqueValues(filtered,"mouza").forEach(v=>{
+        mouzaSelect.innerHTML += `<option value="${v}">${v}</option>`;
+    });
+    updateHoldingOptions();
+}
+
+function updateHoldingOptions(){
+    let district = document.getElementById("districtFilter").value;
+    let upazila = document.getElementById("upazilaFilter").value;
+    let mouza = document.getElementById("mouzaFilter").value;
+    let holdingSelect = document.getElementById("holdingFilter");
+    holdingSelect.innerHTML = `<option value="">সব হোল্ডিং</option>`;
+
+    let filtered = successData.filter(r => (!district || r.district === district) && (!upazila || r.upazila === upazila) && (!mouza || r.mouza === mouza));
+    uniqueValues(filtered,"holding").forEach(v=>{
+        holdingSelect.innerHTML += `<option value="${v}">${v}</option>`;
+    });
+    applyFilters();
+}
+
+function applyFilters(){
+    let district = document.getElementById("districtFilter").value;
+    let upazila = document.getElementById("upazilaFilter").value;
+    let mouza = document.getElementById("mouzaFilter").value;
+    let holding = document.getElementById("holdingFilter").value;
+
+    let filtered = successData.filter(r =>
+        (!district || r.district === district) &&
+        (!upazila || r.upazila === upazila) &&
+        (!mouza || r.mouza === mouza) &&
+        (!holding || r.holding === holding)
+    );
+    renderTable(filtered);
+}
+
+function copyToExcel(){
+    let table = document.getElementById("resultTable");
+    let range = document.createRange();
+    range.selectNode(table);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand("copy");
+    alert("টেবিল কপি হয়েছে!");
+}
+
+function downloadSuccess(){
+    let rows = successData.map((r,i)=>
+        `${i+1}\t${r.saveTime}\t${r.district}\t${r.upazila}\t${r.mouza}\t${r.office}\t${r.holding}\t${r.khatian}\t${r.dakhila_date}\t${r.print}\t${r.id}`
+    ).join("\n");
+    let blob = new Blob([rows], {type:'text/plain;charset=utf-8'});
+    let a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `Land_Report_${Date.now()}.txt`;
+    a.click();
+}
+
+function downloadFailed(){
+    let blob = new Blob([failedList.join("\n")], {type:'text/plain'});
+    let a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "failed_ids.txt";
+    a.click();
+}
+
+function clearHistory(){
+    if(confirm("সব history delete করবেন?")){
+        localStorage.removeItem("dakilaDataHistory");
+        successData = [];
+        renderTable([]);
+        loadDistrictOptions();
+        initAutoRange();
+    }
+}
+
+</script>
+
+</body>
+</html>
